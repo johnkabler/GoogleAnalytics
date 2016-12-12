@@ -248,12 +248,12 @@ Google Analytics Input GUI
 
 <!-- Date Pickers fieldset -->
     <fieldset id="datePickers" style="display:block;"><!--Add a display:none during process story-->
-        <legend>Select Date Range of Analysis</legend>
+        <legend>Select Dates to Include</legend>
         <hr>
         <div id="preDefDateRange">
-            <label for="preDefDropDown">Pre-defined Date Ranges</label>
+            <label for="preDefDropDown">Preset Date Range</label>
             <alteryx-pluginwidget type="DropDown" id="preDefDropDown" dataName="preDefDropDown">
-                <alteryx-option uiobject="Custom Date">custom</alteryx-option>
+                <alteryx-option uiobject="Custom">custom</alteryx-option>
                 <alteryx-option uiobject="Today">today</alteryx-option>
                 <alteryx-option uiobject="Yesterday">yesterday</alteryx-option>
                 <alteryx-option uiobject="Last 7 Days">last7Days</alteryx-option>
@@ -267,15 +267,15 @@ Google Analytics Input GUI
         </div>
         <br>
         <div id="startDate" class="datePicker">
-            <label for="startDatePicker" class="datePickerLabel">Starting Date</label>
+            <label for="startDatePicker" class="datePickerLabel">Start</label>
             <alteryx-pluginwidget type="DateTimeField" dateFormat="YYYY-MM-DD" id="startDatePicker" dataType="SimpleDate" dataName="startDatePicker">
             </alteryx-pluginwidget>
         </div>
         <div id="endDate" class="datePicker">
-            <label for="endDatePicker" class="datePickerLabel">Ending Date</label>
-            <alteryx-pluginwidget type="DateTimeField" dateFormat="YYYY-MM-DD" id="endDatePicker" dataType="SimpleDate" dataName="endDatePicker">
-            </alteryx-pluginwidget>
+            <label for="endDatePicker" class="datePickerLabel">End</label>
+            <alteryx-pluginwidget type="DateTimeField" dateFormat="YYYY-MM-DD" id="endDatePicker" dataType="SimpleDate" dataName="endDatePicker"></alteryx-pluginwidget>
         </div>
+        <div id="dateWarning"></div>
         <div>
             <!-- Add id name and onclick function during process story -->
             <button type="submit" class="nextBtn" id="" onclick="">Next</button>

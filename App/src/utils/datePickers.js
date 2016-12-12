@@ -2,18 +2,19 @@ import moment from 'moment'
 
 // Build relative dates object based on today's date
 const getDates = () => {
-  const today = moment().format('YYYY-MM-DD')
-  const yesterday = moment().subtract(1, 'days').format('YYYY-MM-DD')
-  const L7DStart = moment().subtract(7, 'days').format('YYYY-MM-DD')
-  const LWEnd = moment().subtract(moment().day() + 1, 'days').format('YYYY-MM-DD')
-  const LWStart = moment(LWEnd).subtract(6, 'days').format('YYYY-MM-DD')
-  const L30DStart = moment(yesterday).subtract(29, 'days').format('YYYY-MM-DD')
-  const LMEnd = moment().subtract(moment().date(), 'days').format('YYYY-MM-DD')
-  const LMStart = moment(LMEnd).subtract(moment(LMEnd).date() - 1, 'days').format('YYYY-MM-DD')
-  const CurMonStart = moment().startOf('month').format('YYYY-MM-DD')
-  const CurYearStart = moment().startOf('year').format('YYYY-MM-DD')
-  const LYStart = moment().startOf('year').subtract(1, 'years').format('YYYY-MM-DD')
-  const LYEnd = moment().startOf('year').subtract(1, 'days').format('YYYY-MM-DD')
+  const format = 'YYYY-MM-DD'
+  const today = moment().format(format)
+  const yesterday = moment().subtract(1, 'days').format(format)
+  const L7DStart = moment().subtract(7, 'days').format(format)
+  const LWEnd = moment().subtract(moment().day() + 1, 'days').format(format)
+  const LWStart = moment(LWEnd).subtract(6, 'days').format(format)
+  const L30DStart = moment(yesterday).subtract(29, 'days').format(format)
+  const LMEnd = moment().subtract(moment().date(), 'days').format(format)
+  const LMStart = moment(LMEnd).subtract(moment(LMEnd).date() - 1, 'days').format(format)
+  const CurMonStart = moment().startOf('month').format(format)
+  const CurYearStart = moment().startOf('year').format(format)
+  const LYStart = moment().startOf('year').subtract(1, 'years').format(format)
+  const LYEnd = moment().startOf('year').subtract(1, 'days').format(format)
 
   return {
     'today': {

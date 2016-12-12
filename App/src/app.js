@@ -12,6 +12,7 @@ import DimensionMessage from './components/dimensionMessage.jsx'
 import moment from 'moment'
 import * as picker from './utils/datePickers'
 import SegmentMessage from './components/segmentMessage.jsx'
+import DateMessage from './components/dateMessage.jsx'
 
 Alteryx.Gui.AfterLoad = (manager) => {
   // Adds metrics.metricsSelectionCheck to UserDataChanged of metricsList
@@ -90,13 +91,6 @@ Alteryx.Gui.AfterLoad = (manager) => {
     }
   })
 
-  // Warn when start date is after end date
-  autorun(() => {
-    if (store.startIsAfterEnd) {
-      // display error message that start date must not be after end date
-    }
-  })
-
   // When a custom date is selected, switch preDefined selector to 'custom'
   autorun(() => {
     if (store.isCustomDate) {
@@ -104,8 +98,6 @@ Alteryx.Gui.AfterLoad = (manager) => {
     }
   })
 
-  // Using an autorun function to watch store.webPropertiesList.selection.  If
-  // it changes, trigger the accounts.populateProfilesMenu function.
   autorun(() => {
     if (store.preDefDropDown) {
       if (store.preDefDropDown !== 'custom') {
@@ -142,7 +134,10 @@ Alteryx.Gui.AfterLoad = (manager) => {
   ReactDOM.render(<MetricMessage store={store} />, document.querySelector('#selectedMetrics'))
   // Render react component which handles Dimension selection messaging.
   ReactDOM.render(<DimensionMessage store={store} />, document.querySelector('#selectedDimensions'))
+  // Render react component which handles Segment selection messaging.
   ReactDOM.render(<SegmentMessage store={store} />, document.querySelector('#selectedSegments'))
+  // Render react component which handles a warning message for End Date not at or after Start Date.
+  ReactDOM.render(<DateMessage store={store} />, document.querySelector('#dateWarning'))
 
   let optionList = [{uiobject: 'test1', dataname: 'test1 value'},
                     {uiobject: 'test2', dataname: 'test2 value'}]
