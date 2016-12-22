@@ -50,7 +50,7 @@ const checkToken = (data) => {
     //set the access token
     if (typeof data.errors == 'undefined') {
         const accessToken = data.access_token;
-        console.log('Setting access token: ' + accessToken);
+        // console.log('Setting access token: ' + accessToken);
         Alteryx.Gui.manager.GetDataItem('accessToken').setValue(accessToken);
     };
 }

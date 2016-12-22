@@ -122,6 +122,12 @@ Google Analytics Input GUI
             float: left;
         }
 
+        input:disabled {
+            opacity: .5;
+            background: #DDDDDD;
+            pointer-events: none;
+        }
+
         /*@media (max-width:407px) {
             .alignment_container {
                 padding-left:5%;
@@ -205,6 +211,44 @@ Google Analytics Input GUI
         </div>
     </fieldset>
 
+    <!-- Date Pickers fieldset -->
+        <fieldset id="datePickers" style="display:block;"><!--Add a display:none during process story-->
+            <legend>Select Dates to Include</legend>
+            <div id="preDefDateRange">
+                <label for="preDefDropDown">Preset Date Range</label>
+                <alteryx-pluginwidget type="DropDown" id="preDefDropDown" dataName="preDefDropDown">
+                    <alteryx-option uiobject="Custom">custom</alteryx-option>
+                    <alteryx-option uiobject="Today">today</alteryx-option>
+                    <alteryx-option uiobject="Yesterday">yesterday</alteryx-option>
+                    <alteryx-option uiobject="Last 7 Days">last7Days</alteryx-option>
+                    <alteryx-option uiobject="Last Week">lastWeek</alteryx-option>
+                    <alteryx-option uiobject="Last 30 Days">last30Days</alteryx-option>
+                    <alteryx-option uiobject="Last Month">lastMonth</alteryx-option>
+                    <alteryx-option uiobject="Month to Date">monthToDate</alteryx-option>
+                    <alteryx-option uiobject="Year to Date">yearToDate</alteryx-option>
+                    <alteryx-option uiobject="Last Year">lastYear</alteryx-option>
+                </alteryx-pluginwidget>
+            </div>
+            <br>
+            <div id="startDate" class="datePicker">
+                <label for="startDatePicker" class="datePickerLabel">Start</label>
+                <alteryx-pluginwidget type="DateTimeField" dateFormat="YYYY-MM-DD" id="startDatePicker" dataType="SimpleDate" dataName="startDatePicker">
+                </alteryx-pluginwidget>
+            </div>
+            <div id="endDate" class="datePicker">
+                <label for="endDatePicker" class="datePickerLabel">End</label>
+                <alteryx-pluginwidget type="DateTimeField" dateFormat="YYYY-MM-DD" id="endDatePicker" dataType="SimpleDate" dataName="endDatePicker"></alteryx-pluginwidget>
+            </div>
+            <div>
+                <div id="dateWarning"></div>
+              <div style="float: right">
+              <!-- Add id name and onclick function during process story -->
+                <button type="submit" class="nextBtn" id="" onclick="">Next</button>
+                <button class="prevBtn" id="" onclick="">Previous</button>
+              </div>
+            </div>
+        </fieldset>   
+
 <!-- Metrics fieldset -->
     <fieldset id="metrics" style="display:block;"><!--Add a display:none during process story-->
         <legend>Select Metrics to Include</legend>
@@ -215,7 +259,7 @@ Google Analytics Input GUI
         <alteryx-pluginwidget type="ListBox" datatype="MultiStringSelector"
           ismultiselect="true" issearchable="true" id="metricsGoalsList" dataName="metricsGoalsList" showsearchrow="true"></alteryx-pluginwidget>
         <div id="selectedMetrics"></div>
-        
+
     </fieldset>
 
 <!-- Dimensions fieldset -->

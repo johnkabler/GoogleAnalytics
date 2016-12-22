@@ -16,6 +16,7 @@ const pushCombinedMetadata = (store) => {
 
   Promise.all(promises)
     .then(preSortMetadata)
+    .then(filterBadMetadata)
     .then(sortMetadata)
     .then(storePush)
 }
@@ -35,6 +36,46 @@ const getMetadata = (accessToken) => {
     }
   }
   return $.ajax(settings)
+}
+
+// filter out bad metadata
+const filterBadMetadata = (response) => {
+  let objArray = []
+  const excludeList = [
+    'ga:contentGroupUniqueViewsXX',
+    'ga:calcMetric_<NAME>',
+    'ga:metricXX',
+    'ga:goalXXAbandons',
+    'ga:goalXXAbandonRate',
+    'ga:goalXXCompletions',
+    'ga:goalXXConversionRate',
+    'ga:goalXXStarts',
+    'ga:goalXXValue',
+    'ga:searchGoalXXConversionRate',
+    'ga:landingContentGroupXX',
+    'ga:contentGroupXX',
+    'ga:previousContentGroupXX',
+    'ga:dimensionXX',
+    'ga:customVarNameXX',
+    'ga:customVarValueXX',
+    'ga:productCategoryLevelXX'
+  ]
+
+  // loop through each item in matchArray to exclude bad metadata
+  response.forEach(d => {
+    let remove = false
+    for (let i = 0, l = excludeList.length; i < l; i++) {
+      if (excludeList[i] === d.id) {
+        remove = true
+        break
+      }
+    }
+    // push non-matches to the objArray
+    if (!remove) {
+      objArray.push(d)
+    }
+  })
+  return objArray
 }
 
 // filter deprecated metrics & dimensions from standard metadata array
@@ -131,8 +172,8 @@ const storePush = (results) => {
     const storeType = d.attributes.type === 'METRIC' ? store.metricsList : store.dimensionsList
     storeType.stringList.push({ uiobject: d.attributes.uiName, dataname: d.id })
   })
-  console.log(toJS(store.metricsList.stringList))
-  console.log(toJS(store.dimensionsList.stringList))
+  // console.log(toJS(store.metricsList.stringList))
+  // console.log(toJS(store.dimensionsList.stringList))
 }
 
-export { getMetadata, filterMetadata, getCustomMetadata, pushCombinedMetadata, storePush, preSortMetadata }
+export { getMetadata, filterMetadata, getCustomMetadata, pushCombinedMetadata, storePush, preSortMetadata };

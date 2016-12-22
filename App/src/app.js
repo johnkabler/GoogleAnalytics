@@ -4,7 +4,7 @@ import { setFreshAccessToken, login, displayFieldset } from './utils/utils'
 import AyxStore from './stores/AyxStore'
 import * as accounts from './utils/accountUtils'
 import * as metadataRequest from './utils/metadataRequest'
-import { extendObservable, autorun, toJS } from 'mobx'
+import { extendObservable, autorun, autorunAsync, toJS } from 'mobx'
 import * as goals from './utils/goals'
 import * as segments from './utils/segments'
 import MetricMessage from './components/metricMessage.jsx'
@@ -13,6 +13,7 @@ import moment from 'moment'
 import * as picker from './utils/datePickers'
 import SegmentMessage from './components/segmentMessage.jsx'
 import DateMessage from './components/dateMessage.jsx'
+import inputControl from './utils/inputControl.js'
 
 Alteryx.Gui.AfterLoad = (manager) => {
   // Adds metrics.metricsSelectionCheck to UserDataChanged of metricsList
@@ -161,13 +162,24 @@ Alteryx.Gui.AfterLoad = (manager) => {
   let optionList = [{uiobject: 'test1', dataname: 'test1 value'},
                     {uiobject: 'test2', dataname: 'test2 value'}]
 
+  // const triggerInputControlOnLoad = () => {
+  //   const original = store.maxResults
+  //   console.log('trigger: store original val of ' + original)
+  //   store.maxResults += 1
+  //   console.log('trigger: set new val to ' + store.maxResults)
+  //   store.maxResults = original
+  //   console.log('trigger: reset val to ' + store.maxResults)
+  // }
+
+  // triggerInputControlOnLoad()
+
   // ////// ALTERYX CREDS //////
-  store.client_id = '934931015435-4ugtr9vvg2jiefrn9r8t1d8ato000bdq.apps.googleusercontent.com'
-  store.client_secret = '2qXTVfi_lkB5ZvutdZlWm9Dr'
-  store.refresh_token = '1/-hh4BUqg51tYT4w-YevMPzJ6LuGmx4vzWbCgvUzCrz8'
+  store.client_id = '734530915454-u7qs1p0dvk5d3i0hogfr0mpmdnjj24u2.apps.googleusercontent.com'
+  store.client_secret = 'Fty30QrWsKLQW-TmyJdrk9qf'
+  store.refresh_token = '1/58fo4PUozzcHFs2VJaY23wxyHc-x3-pb-2dUbNw33W4'
 
   // ////// CHINESE CHARSET CREDS //////
-  // store.client_id = '762585493927-3mkdpr3960s48p03gqk9sm0u13co8aht.apps.googleusercontent.com`'
+  // store.client_id = '762585493927-3mkdpr3960s48p03gqk9sm0u13co8aht.apps.googleusercontent.com'
   // store.client_secret = 'JNc1NiYYiDYFGhzQE1Ir_xsU'
   // store.refresh_token = '1/8oUvgmJUO_HmZcx6tfChpdcmRfp_hcfSaXXK35QTEt8'
 
@@ -178,6 +190,10 @@ Alteryx.Gui.AfterLoad = (manager) => {
   // goals.populateMetricsGoalsList(store)
   // goals.populateDimensionsGoalsList(store)
   // segments.populateSegmentsList(store)
+
+  let promiseTest = Promise.resolve(store.totalMetricsAndGoals)
+
+  console.log('promiseTest = ' + toJS(promiseTest))
 
   window.optionList = optionList
 
