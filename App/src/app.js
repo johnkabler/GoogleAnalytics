@@ -198,8 +198,10 @@ Alteryx.Gui.AfterLoad = (manager) => {
   let optionList = [{uiobject: 'test1', dataname: 'test1 value'},
                     {uiobject: 'test2', dataname: 'test2 value'}]
 
-  // All window declarations, below, are simply to expose functionality to the console, and
-  // should probably be removed or commented out before shipping the connector.
+// ----------------------------------------------------------------------------------------- //
+// All window declarations, below, are simply to expose functionality to the console, and
+// should probably be removed or commented out before shipping the connector.
+// ----------------------------------------------------------------------------------------- //
   window.optionList = optionList
 
   window.store = store
