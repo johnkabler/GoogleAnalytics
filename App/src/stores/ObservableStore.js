@@ -23,7 +23,7 @@ class ObservableStore {
       });
       if (d.type === 'listBox') {
         extendObservable(this[d.key], {
-          selectedValues: () => {
+          get selectedValues () {
             return this[d.key].selection.map((selVal) => {
               const matchItems = this[d.key].stringList.filter((optionItem) => {
                 return optionItem.dataName === selVal;
