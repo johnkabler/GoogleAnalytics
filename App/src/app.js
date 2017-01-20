@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { login, displayFieldset, setPage, getAccessTokenAjaxCall, tokenValid, resetFields } from './utils/utils'
+import { setFreshAccessToken, login, displayFieldset, setPage } from './utils/utils'
 import AyxStore from './stores/AyxStore'
 import * as accounts from './utils/accountUtils'
 import * as metadataRequest from './utils/metadataRequest'
@@ -8,17 +8,16 @@ import { extendObservable, autorun, toJS } from 'mobx'
 import * as goals from './utils/goals'
 import * as segments from './utils/segments'
 import MetricMessage from './components/metricMessage.jsx'
-import MetricBubbleMessage from './components/MetricBubbleMessage.jsx'
 import DimensionMessage from './components/dimensionMessage.jsx'
 import moment from 'moment'
 import * as picker from './utils/datePickers'
 import SegmentMessage from './components/segmentMessage.jsx'
 import DateMessage from './components/dateMessage.jsx'
 import conditionallyEnable from './utils/interfaceStateControl'
-import ConnectionErrorMessage from './components/connectionErrorMessage.jsx'
 import { mainGoalsFunction } from './utils/goalsRedux'
 
 Alteryx.Gui.AfterLoad = (manager) => {
+
   const collection = [
     {key: 'client_id', type: 'value'},
     {key: 'client_secret', type: 'value'},
@@ -37,8 +36,7 @@ Alteryx.Gui.AfterLoad = (manager) => {
     {key: 'segmentsList', type: 'listBox'},
     {key: 'advOptions', type: 'value'},
     {key: 'maxResults', type: 'value'},
-    {key: 'page', type: 'value'},
-    {key: 'errorStatus', type: 'value'}
+    {key: 'page', type: 'value'}
   ]
 
   // Instantiate the mobx store which will sync all dataItems
@@ -49,9 +47,6 @@ Alteryx.Gui.AfterLoad = (manager) => {
   if (!store.preDefDropDown) {
     store.preDefDropDown = 'custom'
   }
-
-  // Check that accessToken is valid
-  tokenValid(store)
 
   extendObservable(store, {
     // Compute total selections for metrics and metric goals for use in react messaging
@@ -191,11 +186,6 @@ Alteryx.Gui.AfterLoad = (manager) => {
   // Render react component which handles Metric selection messaging
   ReactDOM.render(<MetricMessage store={store} />, document.querySelector('#selectedMetrics'))
 
-  ReactDOM.render(<MetricBubbleMessage store={store} />, document.querySelector('#metricBubbleMessage'))
-
-  // Render react component which handles connection error messaging
-  ReactDOM.render(<ConnectionErrorMessage store={store} />, document.querySelector('#connectionErrorMessage'))
-
   // Render react component which handles Dimension selection messaging.
   ReactDOM.render(<DimensionMessage store={store} />, document.querySelector('#selectedDimensions'))
 
@@ -209,18 +199,17 @@ Alteryx.Gui.AfterLoad = (manager) => {
   let optionList = [{uiobject: 'test1', dataname: 'test1 value'},
                     {uiobject: 'test2', dataname: 'test2 value'}]
 
-  // All window declarations, below, are simply to expose functionality to the console, and
-  // should probably be removed or commented out before shipping the connector.
-  // Steve - I've found that if a function is referenced by the Gui.html file they need to be defined below
+// ----------------------------------------------------------------------------------------- //
+// All window declarations, below, are simply to expose functionality to the console, and
+// should probably be removed or commented out before shipping the connector.
+// ----------------------------------------------------------------------------------------- //
   window.optionList = optionList
 
   window.store = store
 
-  window.getAccessTokenAjaxCall = getAccessTokenAjaxCall
+  window.setFreshAccessToken = setFreshAccessToken
 
   window.login = login
-
-  window.resetFields = resetFields
 
   window.displayFieldset = displayFieldset
 
@@ -246,4 +235,3 @@ Alteryx.Gui.AfterLoad = (manager) => {
 
   window.mainGoalsFunction = mainGoalsFunction
 }
-
