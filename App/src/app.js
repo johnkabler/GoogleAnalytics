@@ -14,6 +14,7 @@ import * as picker from './utils/datePickers'
 import SegmentMessage from './components/segmentMessage.jsx'
 import DateMessage from './components/dateMessage.jsx'
 import conditionallyEnable from './utils/interfaceStateControl'
+import { mainGoalsFunction } from './utils/goalsRedux'
 
 Alteryx.Gui.AfterLoad = (manager) => {
 
@@ -231,4 +232,6 @@ Alteryx.Gui.AfterLoad = (manager) => {
   window.setDates = picker.setDates
 
   window.toJS = toJS
+
+  window.mainGoalsFunction = mainGoalsFunction
 }
