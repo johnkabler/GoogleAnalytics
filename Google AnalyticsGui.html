@@ -24,12 +24,48 @@ Google Analytics Input GUI
         }
 
         .selectionLegend {
-            margin: 5px 0px 5px 10px;
+            margin: 0px 0px 5px 0px;
+            color: #00698C;
+        }
+
+        .listboxLegend {
+            margin: 0px 0px 0px 0px;
+            font-family: "Segoe UI Semibold"
         }
 
         #metricsGoalsList .searchable-list-box, #dimensionsGoalsList .searchable-list-box {
                 height:126px;
+
         }
+
+        .bubbleWarning:before {
+           background-color: transparent;
+           border-left: 8px solid transparent;
+           border-right: 8px solid transparent;
+           border-bottom: 8px solid #9f1d20;
+           content: "\00a0";
+           height: 0px;
+           position: absolute;
+           top: -8px;
+           width: 0px;
+           bottom: 20px;
+           left: 20px;
+       }
+       .bubbleWarning {
+           background-color: #ec2227;
+           border: 1px solid #9f1d20;
+           border-radius: 5px;
+           color: #ffffff;
+           display: inline-block;
+           font-family: 'Segoe UI Semibold';
+           font-size: 12px;
+           left: 120px;
+           top: 120px;
+           padding: 5px 5px 5px 5px;
+           position: absolute;
+           bottom: 660px;
+
+       }
 
         .prevBtn {
             border-color: rgb(228, 228, 228);
@@ -85,10 +121,11 @@ Google Analytics Input GUI
             padding-top: 5px;
             padding-left: 10px;
             padding-right: 5px;
-            background-color: rgb(238,238,238);
-            border: #D5D5D5;
+            border: #EAF7FF;
             border-style: solid;
             border-width: 1px;
+            background-color: #EAF7FF;
+            font-family: "Segoe UI Semibold";
         }
 
         .selectionMessage-inner {
@@ -106,8 +143,27 @@ Google Analytics Input GUI
             margin-bottom: 0px;
             padding: 6px 10px 7px 10px;
             border-width: 1px;
+            border-left: 8px;
             border-style: solid;
-            border-color: rgb(187,187,187);
+            border-color: #00698C;
+            font-color: #1691C6;
+            font-family: "Segoe UI";
+
+        }
+
+        .goalSelectionMessage-btn {
+            display: inline-block;
+            margin-top: 5px;
+            margin-right: 5px;
+            margin-bottom: 0px;
+            padding: 6px 10px 7px 10px;
+            border-width: 1px;
+            border-left: 8px;
+            border-style: solid;
+            border-color: #00a89e;
+            font-color: #1691C6;
+            font-family: "Segoe UI";
+
         }
 
         .datePicker {
@@ -266,11 +322,16 @@ Google Analytics Input GUI
 
 <!-- Metrics fieldset -->
     <fieldset id="metrics" style="display:none;"><!--Add a display:none during process story-->
-        <legend>Select Metrics to Include</legend>
+        <legend>Select Metrics and Goals to Include</legend>
         <hr>
-        <p class="selectionLegend">Select up to ten metrics and goals...</p>
+        <p class="selectionLegend">Choose a combined maximum of 10 metrics and goals...</p>
+        <p class="listboxLegend">Metrics</p>
+        <div id="metricBubbleMessage"></div>
         <alteryx-pluginwidget type="ListBox" datatype="MultiStringSelector"
           ismultiselect="true" issearchable="true" id="metricsList" dataName="metricsList" showsearchrow="true"></alteryx-pluginwidget>
+
+        <p class="listboxLegend">Goals</p>
+
         <alteryx-pluginwidget type="ListBox" datatype="MultiStringSelector"
           ismultiselect="true" issearchable="true" id="metricsGoalsList" dataName="metricsGoalsList" showsearchrow="true"></alteryx-pluginwidget>
         <div id="selectedMetrics"></div>

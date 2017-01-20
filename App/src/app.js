@@ -8,6 +8,7 @@ import { extendObservable, autorun, toJS } from 'mobx'
 import * as goals from './utils/goals'
 import * as segments from './utils/segments'
 import MetricMessage from './components/metricMessage.jsx'
+import MetricBubbleMessage from './components/MetricBubbleMessage.jsx'
 import DimensionMessage from './components/dimensionMessage.jsx'
 import moment from 'moment'
 import * as picker from './utils/datePickers'
@@ -188,6 +189,8 @@ Alteryx.Gui.AfterLoad = (manager) => {
 
   // Render react component which handles Metric selection messaging
   ReactDOM.render(<MetricMessage store={store} />, document.querySelector('#selectedMetrics'))
+
+  ReactDOM.render(<MetricBubbleMessage store={store} />, document.querySelector('#metricBubbleMessage'))
 
   // Render react component which handles connection error messaging
   ReactDOM.render(<ConnectionErrorMessage store={store} />, document.querySelector('#connectionErrorMessage'))
