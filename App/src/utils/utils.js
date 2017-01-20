@@ -49,25 +49,26 @@ Authentication logic
 ***********************************
 */
 const checkToken = (data) => {
-  // set the access token
   if (typeof data.errors === 'undefined') {
+    // Set access token
     const accessToken = data.access_token
-    // console.log('Setting access token: ' + accessToken);
     Alteryx.Gui.manager.GetDataItem('accessToken').setValue(accessToken)
-  };
-}
-
-const authFail = (error) => {
-//  console.log(error.statusText);
-  console.log(error)
-}
-
-const setFreshAccessToken = () => {
-  const fetchToken = getAccessTokenAjaxCall()
-
-  fetchToken
-    .done(checkToken)
-    .fail(authFail)
+  }
+  // Remove any error messaging
+  store.errorStatus = ''
+  // Change page to current page or profileSelectors
+  console.log('store page:  ' + store.page)
+  switch (store.page) {
+    case '':
+      displayFieldset('#accessMethod')
+      break
+    case '#offlineCreds':
+      store.page = '#profileSelectors'
+      displayFieldset('#profileSelectors')
+      break
+    default:
+      displayFieldset(store.page)
+  }
 }
 
 // non interactive developer method
@@ -77,7 +78,7 @@ const getAccessTokenAjaxCall = () => {
   const clientSecret = Alteryx.Gui.manager.GetDataItem('client_secret').value
   const refreshToken = Alteryx.Gui.manager.GetDataItem('refresh_token').value
 
-    // API call settings
+  // API call settings
   const settings = {
     'async': true,
     'crossDomain': true,
@@ -98,42 +99,30 @@ const getAccessTokenAjaxCall = () => {
   }
 
   return $.ajax(settings)
+    .done(checkToken)
+    .fail(connectionError)
 }
-
-// const loggedIn    =   false;
 
 // 1st step - Online login method
 const login = (store) => {
   const OAUTHURL = 'https://accounts.google.com/o/oauth2/auth?'
-  const VALIDURL = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='
   const SCOPE = 'https://www.googleapis.com/auth/analytics.readonly'
-    // const CLIENTID    =   '848225068776-9gs7ugqmespd53h65vh058pr7sae1h4c.apps.googleusercontent.com';
   const CLIENTID = '552512737410-g6admen5hqg6q268dmt3d9bminlri7en.apps.googleusercontent.com'
   const REDIRECT = 'https://developers.google.com/oauthplayground'
-  const LOGOUT = 'http://accounts.google.com/Logout'
   const TYPE = 'token'
   const _url = OAUTHURL + 'scope=' + SCOPE + '&client_id=' + CLIENTID + '&redirect_uri=' + REDIRECT + '&response_type=' + TYPE
-
-  console.log('login() called')
-  console.log('_url')
-  console.log(_url)
-
   const win = window.open(_url, 'windowname1', 'width=800, height=600')
+  Alteryx.Gui.manager.GetDataItem('errorStatus').setValue('')
 
   const pollTimer = window.setInterval(() => {
-    console.log('pollTimer() called')
-        // window.location.href = toolGuiUrl;
     try {
       if (win.document.location.origin === 'https://developers.google.com') {
         const url = win.document.URL
-        accessToken = gup(url, 'access_token')
-        console.log('Online Access Token:')
-        console.log(accessToken)
+        const accessToken = gup(url, 'access_token')
         Alteryx.Gui.manager.GetDataItem('accessToken').setValue(accessToken)
         validateToken(accessToken)
-                // window.location.href = toolGuiUrl;
         win.close()
-        displayFieldset(['#accessMethod', '#onlineCreds'])
+        setPage('#profileSelectors')
       }
     } catch (e) {
                 // console.log("catch");
@@ -168,40 +157,27 @@ const validateToken = (token) => {
   }
   return $.ajax(settings)
         .done(ajaxSuccess)
-        // .fail(errParse)
+        .fail(connectionError)
 }
-const errParse = (jqXHR, textStatus, errorThrown) => {
-  switch (jqXHR.status) {
-    case 400:
-      document.getElementById('connectionStatus').innerHTML = '400 Bad Request Error:  Reconfigure tool and try again'
-      break
-    case 401:
-      document.getElementById('connectionStatus').innerHTML = '401 Invalid Token Error:  Token has expired, click Change Login Credentials to login'
-      break
-    case 503:
-      document.getElementById('connectionStatus').innerHTML = '503 Service Unavailable Error:  Google API is unreachable, try again later'
-      break
-    default:
-      document.getElementById('connectionStatus').innerHTML = 'Error - Unable to reach API:  Reconfigure tool and try again'
-  };
-  document.getElementById('connectionStatusBox').setAttribute('style', 'display: block; padding: 5px 5px 5px 5px; background: rgba(208, 2, 27, .2)')
-    // changeCredentials();
+
+const connectionError = (jqXHR, textStatus, errorThrown) => {
+  store.errorStatus = jqXHR.status
 }
+
 const ajaxSuccess = (data, textStatus) => {
-    // loggedIn = true;
+  const accessToken = store.accessToken
   document.getElementById('connectionStatus').innerHTML = ''
   document.getElementById('connectionStatusBox').setAttribute('style', 'display: none')
   Alteryx.Gui.manager.GetDataItem('accessToken').setValue(accessToken)
-    // Call function to retrive workbook list
-    // get_workbook_list();
 }
 
 const setPage = (page) => {
   store.page = page
 }
 
+// Used to show/hide different fielsets
 const displayFieldset = (fieldsetName) => {
-   // Array containing all fieldsets
+  // Array containing all fieldsets
   let fieldsetArray = [
     '#accessMethod',
     '#onlineCreds',
@@ -233,4 +209,67 @@ const displayFieldset = (fieldsetName) => {
   })
 }
 
-export { setFreshAccessToken, getAccessTokenAjaxCall, login, gup, validateToken, displayFieldset, setPage }
+// Used to initially hide all fieldsets on load
+const hideAllFieldsets = () => {
+  const fieldsetArray = [
+    '#accessMethod',
+    '#onlineCreds',
+    '#offlineCreds',
+    '#profileSelectors',
+    '#datePickers',
+    '#metrics',
+    '#dimensions',
+    '#segments',
+    '#token']
+
+  $(document).ready(() => {
+    // Hide each item in the hideArray
+    fieldsetArray.forEach((v) => {
+      $(v).hide()
+    })
+  })
+}
+
+// Used to check that token is still valid within the AfterLoad function
+const tokenValid = (store) => {
+  hideAllFieldsets()
+  if (store.accessToken === '') {
+    return
+  }
+
+  if (store.client_id !== '' && store.client_secret !== '' && store.refresh_token !== '') {
+    console.log('tokenValid - developer creds')
+    getAccessTokenAjaxCall()
+  } else {
+    store.errorStatus = ''
+    // API call settings
+    const settings = {
+      'async': true,
+      'crossDomain': true,
+      'url': 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + store.accessToken,
+      'method': 'GET',
+      'dataType': 'jsonp'
+    }
+
+    return $.ajax(settings)
+    .done((data, textStatus) => {
+      if (data.expires_in < 1 || data.expires_in == null) {
+        setPage('#accessMethod')
+        store.errorStatus = 1
+      } else {
+        displayFieldset(store.page)
+      };
+    })
+    .fail((jqXHR, textStatus, errorThrown) => {
+      store.errorStatus = jqXHR.status
+      setPage('#accessMethod')
+    })
+  }
+}
+
+const resetFields = () => {
+  Alteryx.Gui.manager.GetDataItem('errorStatus').setValue('')
+  // To be added - clear out client id, etc.
+}
+
+export { getAccessTokenAjaxCall, login, gup, validateToken, displayFieldset, setPage, tokenValid, resetFields, hideAllFieldsets }
