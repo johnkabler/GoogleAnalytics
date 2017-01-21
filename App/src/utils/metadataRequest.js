@@ -4,8 +4,6 @@ const pushCombinedMetadata = (store) => {
   const customMetrics = getCustomMetadata(store, 'METRIC')
   const customDimensions = getCustomMetadata(store, 'DIMENSION')
   const promises = [metadata, customMetrics, customDimensions]
-  console.log('getMetadata():')
-  console.log(metadata)
 
   Promise.all(promises)
     .then(preSortMetadata)
