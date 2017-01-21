@@ -7,7 +7,7 @@ const pushCombinedMetadata = (store) => {
 
   Promise.all(promises)
     .then(preSortMetadata)
-    .then(filterBadMetadata)
+    .then(filterInactiveMetadata)
     .then(sortMetadata)
     .then(storePush)
 }
@@ -32,7 +32,7 @@ const getMetadata = (store) => {
 }
 
 // filter out bad metadata
-const filterBadMetadata = (response) => {
+const filterInactiveMetadata = (response) => {
   let objArray = []
   const excludeList = [
     'ga:contentGroupUniqueViewsXX',
@@ -51,32 +51,7 @@ const filterBadMetadata = (response) => {
     'ga:dimensionXX',
     'ga:customVarNameXX',
     'ga:customVarValueXX',
-    'ga:productCategoryLevelXX',
-    'ga:acquisitionCampaign',
-    'ga:acquisitionMedium',
-    'ga:acquisitionSource',
-    'ga:acquisitionSourceMedium',
-    'ga:acquisitionTrafficChannel',
-    'ga:cohort',
-    'ga:cohortNthDay',
-    'ga:cohortNthMonth',
-    'ga:cohortNthWeek',
-    'ga:cohortActiveUsers',
-    'ga:cohortAppviewsPerUser',
-    'ga:cohortAppviewsPerUserWithLifetimeCriteria',
-    'ga:cohortGoalCompletionsPerUser',
-    'ga:cohortGoalCompletionsPerUserWithLifetimeCriteria',
-    'ga:cohortPageviewsPerUser',
-    'ga:cohortPageviewsPerUserWithLifetimeCriteria',
-    'ga:cohortRetentionRate',
-    'ga:cohortRevenuePerUser',
-    'ga:cohortRevenuePerUserWithLifetimeCriteria',
-    'ga:cohortSessionDurationPerUser',
-    'ga:cohortSessionDurationPerUserWithLifetimeCriteria',
-    'ga:cohortSessionsPerUser',
-    'ga:cohortSessionsPerUserWithLifetimeCriteria',
-    'ga:cohortTotalUsers',
-    'ga:cohortTotalUsersWithLifetimeCriteria'
+    'ga:productCategoryLevelXX'
   ]
 
   // loop through each item in matchArray to exclude bad metadata
@@ -179,8 +154,6 @@ const preSortMetadata = (results) => {
 }
 
 const sortMetadata = (results) => {
-  console.log('sortMetadata results')
-  console.table(results)
   return results.sort((a, b) => {
     let uiNameA = a.attributes.uiName.toLowerCase()
     let uiNameB = b.attributes.uiName.toLowerCase()

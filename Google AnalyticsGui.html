@@ -24,8 +24,7 @@ Google Analytics Input GUI
         }
 
         .selectionLegend {
-            margin: 0px 0px 5px 0px;
-            color: #00698C;
+            margin: 5px 0px 5px 10px;
         }
 
         .listboxLegend {
@@ -36,7 +35,6 @@ Google Analytics Input GUI
 
         #metricsGoalsList .searchable-list-box, #dimensionsGoalsList .searchable-list-box {
                 height:126px;
-
         }
 
         .bubbleWarning:before {
@@ -88,12 +86,6 @@ Google Analytics Input GUI
             display: inline-block;
         }
 
-        .connectionErrorMessage {
-            display: block;
-            padding: 5px 5px 5px 5px;
-            background: rgba(208, 2, 27, .2)
-        }
-
         /* Warning message styling */
         .warning {
             background-color: red;
@@ -122,11 +114,10 @@ Google Analytics Input GUI
             padding-top: 5px;
             padding-left: 10px;
             padding-right: 5px;
-            border: #EAF7FF;
+            background-color: rgb(238,238,238);
+            border: #D5D5D5;
             border-style: solid;
             border-width: 1px;
-            background-color: #EAF7FF;
-            font-family: "Segoe UI Semibold";
         }
 
         .selectionMessage-inner {
@@ -144,27 +135,8 @@ Google Analytics Input GUI
             margin-bottom: 0px;
             padding: 6px 10px 7px 10px;
             border-width: 1px;
-            border-left: 8px;
             border-style: solid;
-            border-color: #00698C;
-            font-color: #1691C6;
-            font-family: "Segoe UI";
-
-        }
-
-        .goalSelectionMessage-btn {
-            display: inline-block;
-            margin-top: 5px;
-            margin-right: 5px;
-            margin-bottom: 0px;
-            padding: 6px 10px 7px 10px;
-            border-width: 1px;
-            border-left: 8px;
-            border-style: solid;
-            border-color: #00a89e;
-            font-color: #1691C6;
-            font-family: "Segoe UI";
-
+            border-color: rgb(187,187,187);
         }
 
         .datePicker {
@@ -212,14 +184,14 @@ Google Analytics Input GUI
         <table>
             <tr>
                 <td>
-                <button style="width:116px;" type="submit" id="onlineMode" onclick="resetFields();login();">Online</button><br/><br/>
+                <button style="width:116px;" type="submit" id="onlineMode" onclick="login();">Online</button><br/><br/>
                 Sign in using Google Analytics credentials. This option requires re-entering credentials every 60 minutes or any time a new workflow is opened.
                 </td>
             </tr>
             <tr><td height="3"></td></tr>
             <tr>
                 <td>
-                <button style="width:116px;" type="submit" id="offlineMode" onclick="resetFields();setPage('#offlineCreds');">Offline</button><br/><br/>
+                <button style="width:116px;" type="submit" id="offlineMode" onclick="setPage('#offlineCreds');">Offline</button><br/><br/>
                 Sign in using API credentials. This option requires obtaining a Client ID, Secret, and Token and does not require re-entering credentials to run a workflow.
                 </td>
             </tr>
@@ -231,7 +203,7 @@ Google Analytics Input GUI
         <br/>
         <br/>
         <br/>
-        <a href="javascript:void(0)" onclick="resetFields();setPage('#accessMethod');myIFrame.location='https://www.google.com/accounts/Logout';">Change Login Credentials</a>
+        <a href="javascript:void(0)" onclick="setPage('#accessMethod'); myIFrame.location='https://www.google.com/accounts/Logout';">Change Login Credentials</a>
     </fieldset>
 
 <!-- 1b view - Offline credentials -->
@@ -247,12 +219,12 @@ Google Analytics Input GUI
         <alteryx-pluginwidget type="TextBox" password="true" id="dataItemRefreshToken" dataName="refresh_token"></alteryx-pluginwidget>
         <label></label>
         <div>
-            <button type="submit" style="float: right" id="connect_button" onclick="getAccessTokenAjaxCall();">Connect</button>
+            <button type="submit" style="float: right" id="connect_button" onclick="setFreshAccessToken(); setPage('#profileSelectors');">Connect</button>
         </div>
         <br/>
         <br/>
         <br/>
-        <a href="javascript:void(0)" onclick="resetFields();setPage('#accessMethod');myIFrame.location='https://www.google.com/accounts/Logout';">Change Login Credentials</a>
+        <a href="javascript:void(0)" onclick="setPage('#accessMethod'); myIFrame.location='https://www.google.com/accounts/Logout';">Change Login Credentials</a>
     </fieldset>
 
 <!-- Account/WebProperties/Profiles Selectors fieldset -->
@@ -323,16 +295,11 @@ Google Analytics Input GUI
 
 <!-- Metrics fieldset -->
     <fieldset id="metrics" style="display:none;"><!--Add a display:none during process story-->
-        <legend>Select Metrics and Goals to Include</legend>
+        <legend>Select Metrics to Include</legend>
         <hr>
-        <p class="selectionLegend">Choose a combined maximum of 10 metrics and goals...</p>
-        <p class="listboxLegend">Metrics</p>
-        <div id="metricBubbleMessage"></div>
+        <p class="selectionLegend">Select up to ten metrics and goals...</p>
         <alteryx-pluginwidget type="ListBox" datatype="MultiStringSelector"
           ismultiselect="true" issearchable="true" id="metricsList" dataName="metricsList" showsearchrow="true"></alteryx-pluginwidget>
-
-        <p class="listboxLegend">Goals</p>
-
         <alteryx-pluginwidget type="ListBox" datatype="MultiStringSelector"
           ismultiselect="true" issearchable="true" id="metricsGoalsList" dataName="metricsGoalsList" showsearchrow="true"></alteryx-pluginwidget>
         <div id="selectedMetrics"></div>
@@ -387,14 +354,14 @@ Google Analytics Input GUI
     <fieldset id="token" style="display:none">
         <alteryx-pluginwidget type="TextBox" id="dataItemAccessToken" dataName="accessToken"></alteryx-pluginwidget>
         <alteryx-pluginwidget type="TextBox" id="page" dataName="page"></alteryx-pluginwidget>
-        <alteryx-pluginwidget type="TextBox" id="errorStatus" dataName="errorStatus"></alteryx-pluginwidget>
 
         <a href="#" style="display:none" id="logoutText" target='myIFrame' onclick="myIFrame.location='https://www.google.com/accounts/Logout';"></a>
         <iframe name='myIFrame' id="myIFrame" style='display:none'></iframe>
     </fieldset>
 
 <!-- API error messaging -->
-    <div id="connectionErrorMessage">
+    <div id="connectionStatusBox" style="display:none">
+        <div id="connectionStatus" class="button_alignment_container"></div>
     </div>
 
     <div id="app">

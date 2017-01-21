@@ -23,7 +23,9 @@ class ObservableStore {
       });
       if (d.type === 'listBox') {
         extendObservable(this[d.key], {
-          selectedValues: () => {
+          selectedValues: () => { // Mobx warnings are related to this block of code, but 
+                                  // this is NOT a computed value, as it thinks. Likely, 
+                                  // this will not need any attention when upgrading to Mobx v3.
             return this[d.key].selection.map((selVal) => {
               const matchItems = this[d.key].stringList.filter((optionItem) => {
                 return optionItem.dataName === selVal;
