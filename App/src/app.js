@@ -5,7 +5,7 @@ import AyxStore from './stores/AyxStore'
 import * as accounts from './utils/accountUtils'
 import * as metadataRequest from './utils/metadataRequest'
 import { extendObservable, autorun, toJS } from 'mobx'
-import * as goals from './utils/goals'
+import populateGoalsLists from './utils/goals'
 import * as segments from './utils/segments'
 import MetricMessage from './components/metricMessage.jsx'
 import DimensionMessage from './components/dimensionMessage.jsx'
@@ -14,7 +14,6 @@ import * as picker from './utils/datePickers'
 import SegmentMessage from './components/segmentMessage.jsx'
 import DateMessage from './components/dateMessage.jsx'
 import conditionallyEnable from './utils/interfaceStateControl'
-import { mainGoalsFunction } from './utils/goalsRedux'
 
 Alteryx.Gui.AfterLoad = (manager) => {
 
@@ -131,8 +130,7 @@ Alteryx.Gui.AfterLoad = (manager) => {
     if (store.accessToken !== '' || store.accountsList.stringList.length < 1) {
       accounts.populateAccountsList(store)
       metadataRequest.pushCombinedMetadata(store)
-      goals.populateMetricsGoalsList(store)
-      goals.populateDimensionsGoalsList(store)
+      populateGoalsLists(store)
       segments.populateSegmentsList(store)
     }
   })
@@ -221,10 +219,6 @@ Alteryx.Gui.AfterLoad = (manager) => {
 
   window.populateProfilesMenu = accounts.populateProfilesMenu
 
-  window.populateMetricsGoalsList = goals.populateMetricsGoalsList
-
-  window.populateDimensionsGoalsList = goals.populateDimensionsGoalsList
-
   window.moment = moment
 
   window.getDates = picker.getDates
@@ -233,5 +227,5 @@ Alteryx.Gui.AfterLoad = (manager) => {
 
   window.toJS = toJS
 
-  window.mainGoalsFunction = mainGoalsFunction
+  window.populateGoalsLists = populateGoalsLists
 }
