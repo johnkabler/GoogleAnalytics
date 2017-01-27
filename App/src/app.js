@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { login, displayFieldset, setPage, getAccessTokenAjaxCall, tokenValid, resetFields } from './utils/utils'
+import { login, displayFieldset, setPage, getAccessTokenAjaxCall, tokenValid, resetFields, loading } from './utils/utils'
 import AyxStore from './stores/AyxStore'
 import * as accounts from './utils/accountUtils'
 import * as metadataRequest from './utils/metadataRequest'
@@ -101,43 +101,34 @@ Alteryx.Gui.AfterLoad = (manager) => {
     store.page === '' ? displayFieldset('#accessMethod') : displayFieldset(store.page)
   })
 
+  // Determines whether to show/hide the loading spinner based on page
   autorun(() => {
+    // Shows or hides the loading spinner based on flag
+    const loading = (flag) => {
+      if (flag) {
+        document.getElementById('loading').style.display = 'block'
+        document.getElementById('loading-inner').style.display = 'block'
+      } else {
+        document.getElementById('loading').style.display = 'none'
+        document.getElementById('loading-inner').style.display = 'none'
+      }
+    }
+
     switch (store.page) {
+      case '#profileSelectors':
+        loading(store.accountsList.loading)
       case '#metrics':
-        if (store.metricsList.loading) {
-          document.getElementById('loading').style.display = 'block'
-          document.getElementById('loading-inner').style.display = 'block'
-        } else {
-          document.getElementById('loading').style.display = 'none'
-          document.getElementById('loading-inner').style.display = 'none'
-        }
+        loading(store.metricsList.loading)
         break
       case '#dimensions':
-        if (store.dimensionsList.loading) {
-          document.getElementById('loading').style.display = 'block'
-          document.getElementById('loading-inner').style.display = 'block'
-        } else {
-          document.getElementById('loading').style.display = 'none'
-          document.getElementById('loading-inner').style.display = 'none'
-        }
+        loading(store.dimensionsList.loading)
         break
       case '#segments':
-        if (store.segmentsList.loading) {
-          document.getElementById('loading').style.display = 'block'
-          document.getElementById('loading-inner').style.display = 'block'
-        } else {
-          document.getElementById('loading').style.display = 'none'
-          document.getElementById('loading-inner').style.display = 'none'
-        }
+        loading(store.segmentsList.loading)
         break
       case '#summary':
-        if (store.metricsList.loading || store.dimensionsList.loading || store.segmentsList.loading) {
-          document.getElementById('loading').style.display = 'block'
-          document.getElementById('loading-inner').style.display = 'block'
-        } else {
-          document.getElementById('loading').style.display = 'none'
-          document.getElementById('loading-inner').style.display = 'none'
-        }
+        const flag = (store.metricsList.loading || store.dimensionsList.loading || store.segmentsList.loading)
+        loading(flag)
         break
     }
   })
