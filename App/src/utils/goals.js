@@ -47,7 +47,9 @@ const populateGoalsList = store => {
     resp[0].map(goal => {
       resp[1].map(column => {
         constructedGoals.push({
-          uiobject: goal.name + ' (Goal ' + goal.id + ' ' + column.suffix + ')',
+          id: Number(goal.id),
+          suffix: column.suffix,
+          uiobject: 'Goal ' + goal.id + ' ' + column.suffix + ' (' + goal.name + ')',
           dataname: column.id.replace(/(.*)XX(.*)/, '$1' + goal.id + '$2'),
           type: goal.type
         })
@@ -58,7 +60,7 @@ const populateGoalsList = store => {
 
   const orderGoalsAsc = resp => {
     // sort all goals alphabetically, ascending
-    return _.orderBy(resp, d => d.uiobject.toLowerCase(), 'asc')
+    return _.sortBy(resp, d => [d.id, d.suffix])
   }
 
   const pushToGoalsList = resp => {
@@ -81,6 +83,11 @@ const populateGoalsList = store => {
     .then(filterGoalsAndColumns)
     .then(createGoalSuffix)
     .then(combineGoalsAndColumnsData)
+    .then((resp) => {
+      console.log('id check')
+      console.log(resp)
+      return resp
+    })
     .then(orderGoalsAsc)
     .then(pushToGoalsList)
 }
